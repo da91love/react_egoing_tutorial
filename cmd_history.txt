@@ -1,0 +1,11 @@
+npm install -g create-react-app
+
+cd {application directory}
+
+create-react-app .
+
+npm run start
+
+npm run build
+
+npx serve -s build
