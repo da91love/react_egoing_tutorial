@@ -3,12 +3,19 @@ import React from "react";
 
 class TOC extends Component {
     render() {
+        const data = this.props.data;
+
+        const list = [];
+        data.forEach((obj) => {
+            list.push(
+                <li key={obj.id}><a href={`/content/${obj.id}`}>{obj.title}</a></li>
+            )
+        });
+
         return (
             <nav>
                 <ul>
-                    <li><a href="1.html">HTML</a></li>
-                    <li><a href="2.html">CSS</a></li>
-                    <li><a href="3.html">JS</a></li>
+                    {list}
                 </ul>
             </nav>
         );
