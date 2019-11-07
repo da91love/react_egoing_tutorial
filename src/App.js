@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-// import Subject from './components/Subject'
+import Subject from './components/Subject'
 import Content from './components/Content'
 import TOC from './components/TOC'
 import './App.css';
@@ -13,7 +13,7 @@ class App extends Component {
                 title: 'WEB',
                 sub: 'world wide web'
             },
-            welcome: {
+            content: {
                 title: 'welcome',
                 desc: 'Hello, React'
             },
@@ -33,48 +33,41 @@ class App extends Component {
                     title: 'JAVASCRIPT',
                     desc: 'Javascript is for control'
                 }
-            ],
-            content: {
-                title: 'HTML',
-                desc: 'HTML is Hyper Text Markup Language'
-            },
+            ]
         }
     }
 
     render (){
-        let _title, _desc = null;
-        if(this.state.mode === 'welcome') {
-            _title = this.state.welcome.title;
-            _desc = this.state.welcome.desc;
-        }else {
-            _title = this.state.content.title;
-            _desc = this.state.content.desc;
-        }
-        console.log('what is this?', this);
+        console.log('App');
         return (
-
             <div>
                 <Subject
                     title={this.state.subject.title}
                     sub={this.state.subject.sub}
-                    onChangePage={function(){
-                        alert('this is test');
+                />
+                <TOC
+                    data={this.state.toc}
+                    onChangePage={function(id) {
+                        debugger;
+                        for (var key of this.state.toc) {
+                            debugger;
+                            if (key.id === id) {
+                                this.setState({
+                                    content: {
+                                        title: key.title,
+                                        desc: key.desc
+                                    }
+                                });
+                                break;
+                            }
+
+                        }
                     }.bind(this)}
                 />
-                 {/*Temporary subject tag*/}
-                {/*<header>*/}
-                    {/*<h1 href="/" onClick={function(e) {*/}
-                        {/*alert('hi');*/}
-                        {/*e.preventDefault();*/}
-                        {/*this.setState({*/}
-                            {/*mode: 'welcome'*/}
-                        {/*});*/}
-                        {/*debugger;*/}
-                    {/*}.bind(this)}>{this.state.subject.title}</h1>*/}
-                    {/*{this.state.subject.sub}*/}
-                {/*</header>*/}
-                <TOC data={this.state.toc}/>
-                <Content title={_title} desc={_desc}/>
+                <Content
+                    title={this.state.content.title}
+                    desc={this.state.content.desc}
+                />
             </div>
         );
     }

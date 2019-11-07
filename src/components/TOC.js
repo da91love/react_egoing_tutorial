@@ -9,7 +9,14 @@ class TOC extends Component {
         const list = [];
         data.forEach((obj) => {
             list.push(
-                <li key={obj.id}><a href={`/content/${obj.id}`}>{obj.title}</a></li>
+                <li key={obj.id}
+                    onClick={function(e) { // Event Listener
+                        debugger;
+                        e.preventDefault();
+                        this.props.onChangePage(obj.id);
+                    }.bind(this)}>
+                    <a href={`/content/${obj.id}`}>{obj.title}</a>
+                </li>
             )
         });
 
