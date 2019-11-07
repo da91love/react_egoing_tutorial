@@ -3,6 +3,7 @@ import React from "react";
 
 class TOC extends Component {
     render() {
+        console.log('TOC');
         const data = this.props.data;
 
         const list = [];

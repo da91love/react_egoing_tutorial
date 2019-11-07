@@ -8,7 +8,7 @@ class App extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            mode: 'welcome',
+            mode: 'read',
             subject: {
                 title: 'WEB',
                 sub: 'world wide web'
@@ -50,22 +50,29 @@ class App extends Component {
             _title = this.state.content.title;
             _desc = this.state.content.desc;
         }
-
+        console.log('what is this?', this);
         return (
+
             <div>
-                {/*<Subject title={this.state.subject.title} sub={this.state.subject.sub}/>*/}
-                {/* Temporary subject tag */}
-                <header>
-                    <h1 href="/" onClick={function(e) {
-                        alert('hi');
-                        e.preventDefault();
-                        this.setStart({
-                            mode: 'welcome'
-                        });
-                        debugger;
-                    }.bind(this)}>{this.state.subject.title}</h1>
-                    {this.state.subject.sub}
-                </header>
+                <Subject
+                    title={this.state.subject.title}
+                    sub={this.state.subject.sub}
+                    onChangePage={function(){
+                        alert('this is test');
+                    }.bind(this)}
+                />
+                 {/*Temporary subject tag*/}
+                {/*<header>*/}
+                    {/*<h1 href="/" onClick={function(e) {*/}
+                        {/*alert('hi');*/}
+                        {/*e.preventDefault();*/}
+                        {/*this.setState({*/}
+                            {/*mode: 'welcome'*/}
+                        {/*});*/}
+                        {/*debugger;*/}
+                    {/*}.bind(this)}>{this.state.subject.title}</h1>*/}
+                    {/*{this.state.subject.sub}*/}
+                {/*</header>*/}
                 <TOC data={this.state.toc}/>
                 <Content title={_title} desc={_desc}/>
             </div>

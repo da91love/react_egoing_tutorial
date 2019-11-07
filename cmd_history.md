@@ -426,8 +426,14 @@ export default TOC;
 ```
 - 위의 코드는 두 가지의 문제점을 가지고 있다.
    - 첫번째 : `this.state.mode = 'welcome';`에서 this는 클래스의 인스턴스가 아닌 아무것도 아닌 것이다.
-   따라서 bind()로 해결한다.
-   - 두번째 : react는 state를 변경하기 위해 `setState`라는 함수를 가지고 있으므로, 그 함수를 사용하여야 한다.
+      - -> bind()로 해결한다.
+   - 두번째 : react는 `state`를 변경하기 위해 `setState`라는 함수를 가지고 있으므로, 그 함수를 사용하여야 한다.
+      - 이때 포인트는 생성자에 들어있는 state프로퍼티가 단순한 프로퍼티가 아니라는 점이다. 
+           react내에서 `state`프로퍼티는 특별한 취급을 받는다. `setState`를 하면 단순히 
+           생성자의 값을 바꾸는 것이 아니라 `setState`가 호출된 후 `render`들을 다시 호출하여 
+           새로운 `state`로 화면을 구성한다. 예에서는, App -> TOC -> Content 의 `render`함수를 
+           새로 호출하여 변경된 값으로 새로운 화면을 구성한다. 
+      
 ```javascript
 ...
     render (){
@@ -463,17 +469,68 @@ export default TOC;
 ...
 
 ```   
+## 5일차 
+### event에서 bind함수 이해하기
+- 아래의 Component를 상속받은 App클래스 내에서 this는 무엇을 가르킬까
+
+`App.js`
+```javascript
+class App extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            ...
+        }    
+    }
+
+    render (){
+        console.log('what is this?', this);
+    
+        ...
+
+        return (
+
+            ...
+        );
+    }
+}
+
+```
+- react에서 Component를 상속받을 경우 this는 App클래스를 가르키고 있다는 것을 알 수 있다.
+- (참고)일반적으로 this는 세가지의 다른 상황에 의해서 바인드 된다. 
+[this가 바인드되는 세 가지의 경우](https://valuefactory.tistory.com/674)
+   1. 객체 내부의 메서드에 바인딩 되는 경우
+   2. 메서드 내부에서 바인딩 되는 경우
+   3. 생성자 new로 생성해 그 인스턴스에 바인딩 되는 경우
+   
+     
+- 이때 onClick 내부에 this는 아무것도 가르키지 않는다.
+```javascript
+   <h1 href="/" onClick={function(e) {
+        alert('hi');
+        e.preventDefault();
+        this.setState({
+            mode: 'welcome'
+        });
+        debugger;
+    }.bind(this)}>{this.state.subject.title}</h1>
+
+```   
+- 따라서 상위 블록에 존재하는 this를 가져와 bind를 해줄 수 있다.  
+   
+## 6일차
+### event에서 setState함수 이해하기
+
+- 동적으로 state값을 변경할 경우 `this.setState`를 사용하여야 한다.
+- 포인트는 생성자에 들어있는 state프로퍼티가 단순한 프로퍼티가 아니라는 점이다. 
+react내에서 `state`프로퍼티는 특별한 취급을 받는다. `setState`를 하면 단순히 
+생성자의 값을 바꾸는 것이 아니라 `setState`가 호출된 후 `render`들을 다시 호출하여 
+새로운 `state`로 화면을 구성한다. 예에서는, App -> TOC -> Content 의 `render`함수를 
+새로 호출하여 변경된 값으로 새로운 화면을 구성한다.   
    
    
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
+### component 이벤트 만들기
+
+- 
    
    
