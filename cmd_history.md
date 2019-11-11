@@ -751,3 +751,129 @@ class TOC extends Component {
 // export {TOC};
 export default TOC;
 ``` 
+
+## 7일차
+### 이벤트 setState함수 이해하기
+- 상위 컴퍼넌트 (APP)가 하위 컴퍼턴트(TOC, Subject, Content)를 조작할 때는 props 사용
+- 컴퍼넌트가 자기 자신의 상태를 바꿀 때는 state
+- 하위 컴퍼턴트(TOC, Subject, Content)가 상위 컴퍼넌트 (APP)를 조작할 때는 event 사용
+- (props vs state 이미지)
+
+###  create 구현, 소개 : 각 버튼 클릭시 mode 변경하기
+`App.js`
+```javascript
+import React, {Component} from 'react';
+import Subject from './components/Subject'
+import Content from './components/Content'
+import TOC from './components/TOC'
+import Control from './components/Control'
+import './App.css';
+
+class App extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            mode: 'read',
+            subject: {
+                title: 'WEB',
+                sub: 'world wide web'
+            },
+            content: {
+                title: 'welcome',
+                desc: 'Hello, React'
+            },
+            toc: [
+                {
+                    id: 1,
+                    title: 'HTML',
+                    desc: 'HTML is Hyper Text Markup Language'
+                },
+                {
+                    id: 2,
+                    title: 'CSS',
+                    desc: 'CSS is for design'
+                },
+                {
+                    id: 3,
+                    title: 'JAVASCRIPT',
+                    desc: 'Javascript is for control'
+                }
+            ]
+        }
+    }
+
+    render (){
+        console.log('App');
+        return (
+            <div>
+                <Subject
+                    title={this.state.subject.title}
+                    sub={this.state.subject.sub}
+                />
+                <TOC
+                    data={this.state.toc}
+                    onChangePage={function(id) {
+                        debugger;
+                        for (var key of this.state.toc) {
+                            debugger;
+                            if (key.id === id) {
+                                this.setState({
+                                    content: {
+                                        title: key.title,
+                                        desc: key.desc
+                                    }
+                                });
+                                break;
+                            }
+
+                        }
+                    }.bind(this)}
+                />
+                <Control
+                    onChangeMode={function(mode){
+                        this.setState({
+                           mode: mode
+                        });
+                    }.bind(this)}
+                />
+                <Content
+                    title={this.state.content.title}
+                    desc={this.state.content.desc}
+                />
+            </div>
+        );
+    }
+}
+
+export default App;
+
+```
+
+`Control.js` : 새로 생성된 파일
+```javascript
+import {Component} from "react";
+import React from "react";
+
+class Control extends Component {
+
+
+    render (){
+        // 함수내의 this는 전역 windows를 가르키기 때문에 Control 클래스의 this로 바인드해주어야함
+        const onClick = function(e, mode){
+                e.preventDefault();
+                this.props.onChangeMode(mode)
+            }.bind(this);
+
+        return (
+            <div>
+                <button href="/create" id="create" onClick={function(e){onClick(e, 'create')}}>create</button>
+                <button href="/update" id="update" onClick={function(e){onClick(e, 'update')}}>update</button>
+                <button id="delete" onClick={function(e){onClick(e, 'delete')}}>delete</button>
+            </div>
+        );
+    }
+}
+
+export default Control;
+
+```

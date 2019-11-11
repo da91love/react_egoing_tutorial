@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import Subject from './components/Subject'
 import Content from './components/Content'
 import TOC from './components/TOC'
+import Control from './components/Control'
 import './App.css';
 
 class App extends Component {
@@ -62,6 +63,13 @@ class App extends Component {
                             }
 
                         }
+                    }.bind(this)}
+                />
+                <Control
+                    onChangeMode={function(mode){
+                        this.setState({
+                           mode: mode
+                        });
                     }.bind(this)}
                 />
                 <Content
