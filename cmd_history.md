@@ -759,7 +759,7 @@ export default TOC;
 - 하위 컴퍼턴트(TOC, Subject, Content)가 상위 컴퍼넌트 (APP)를 조작할 때는 event 사용
 - (props vs state 이미지)
 
-###  create 구현, 소개 : 각 버튼 클릭시 mode 변경하기
+###  create 구현, 소개 : 각 버튼 클릭시 mode 변경하기
 `App.js`
 ```javascript
 import React, {Component} from 'react';
@@ -877,3 +877,275 @@ class Control extends Component {
 export default Control;
 
 ```
+
+###  동적으로 컴포넌트 바꿔넣기
+`App.js`
+```javascript
+import React, {Component} from 'react';
+import Subject from './components/Subject'
+import ReadContent from './components/ReadContent'
+import CreateContent from './components/CreateContent'
+import TOC from './components/TOC'
+import Control from './components/Control'
+import './App.css';
+
+class App extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            mode: 'read',
+            subject: {
+                title: 'WEB',
+                sub: 'world wide web'
+            },
+            content: {
+                title: 'welcome',
+                desc: 'Hello, React'
+            },
+            toc: [
+                {
+                    id: 1,
+                    title: 'HTML',
+                    desc: 'HTML is Hyper Text Markup Language'
+                },
+                {
+                    id: 2,
+                    title: 'CSS',
+                    desc: 'CSS is for design'
+                },
+                {
+                    id: 3,
+                    title: 'JAVASCRIPT',
+                    desc: 'Javascript is for control'
+                }
+            ]
+        }
+    }
+
+    render (){
+        // Change Component according to mode
+        let _article = null;
+        if(this.state.mode === 'read') {
+            _article = <ReadContent
+                title={this.state.content.title}
+                desc={this.state.content.desc}
+            />
+        } else if(this.state.mode === 'create') {
+            _article = <CreateContent
+                title={this.state.content.title}
+                desc={this.state.content.desc}
+            />
+        }
+
+        return (
+
+            <div>
+                <Subject
+                    title={this.state.subject.title}
+                    sub={this.state.subject.sub}
+                />
+                <TOC
+                    data={this.state.toc}
+                    onChangePage={function(id) {
+                        for (var key of this.state.toc) {
+                            if (key.id === id) {
+                                this.setState({
+                                    mode: 'read',
+                                    content: {
+                                        title: key.title,
+                                        desc: key.desc
+                                    }
+                                });
+                                break;
+                            }
+
+                        }
+                    }.bind(this)}
+                />
+                <Control
+                    onChangeMode={function(mode){
+                        this.setState({
+                           mode: mode
+                        });
+                    }.bind(this)}
+                />
+                { _article }
+            </div>
+        );
+    }
+}
+
+export default App;
+```
+- _article변수에 mode에 따라 Component객체가 바뀔 수 있도록 설정해줍니다.
+   - 위의 코드에서는 mode에따라 ReadContent, CreateContent가 동적으로 _article에 담깁니다.
+- TOC component 내부에 `mode: 'read'`를 추가하여 list를 클릭했을 때 mode가 read로 바뀌도록 합니다.
+- 재밌는건 { _article } 부분인데, 변수에 Component객체를 넣고 그 변수를 사용할 수 있다는 점입니다.
+
+### input의 값을 추출해 서버로 가져오기
+`CreateContents.js`
+```javascript
+import {Component} from "react";
+import React from "react";
+
+class CreateContent extends Component {
+    render() {
+        console.log('CreateContent');
+        return(
+            <article>
+                <h2>Create</h2>
+                <form action="/create" method="post"
+                      onSubmit={function(e) {
+                            e.preventDefault();
+                            debugger;
+                            let title = e.target.title.value;
+                            let desc = e.target.desc.value;
+                            this.props.onSubmit(title, desc);
+                            alert('submit');
+                        }.bind(this)}>
+
+                    <p>
+                        <input type="text" name="title" placeholder="title"/>
+                    </p>
+                    <p>
+                        <textarea name="desc" placeholder="description"/>
+                    </p>
+                    <p>
+                        <input type="submit"/>
+                    </p>
+
+                </form>
+            </article>
+        )
+    }
+}
+
+export default CreateContent;
+```
+- html의 값들은 `e`를 경유해서 받을 수 있다. 크롬 개발자 모드에서 e를 탐색해 보면
+많은 값들이 들어있는데, form값은 target 변수 안에 들어있다.
+- 이때 중요한 것은 e는 각 태그의 `name` attribute 값을 보고 있는 것이다.
+- 첫번째 input 태그의 `name`은 title 이였기 때문에 `e.target.title.value`으로 그 값을 추출할 수 있다.
+
+
+`App.js`
+```javascript
+class App extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            mode: 'read',
+            subject: {
+                title: 'WEB',
+                sub: 'world wide web'
+            },
+            content: {
+                title: 'welcome',
+                desc: 'Hello, React'
+            },
+            toc: [
+                {
+                    id: 1,
+                    title: 'HTML',
+                    desc: 'HTML is Hyper Text Markup Language'
+                },
+                {
+                    id: 2,
+                    title: 'CSS',
+                    desc: 'CSS is for design'
+                },
+                {
+                    id: 3,
+                    title: 'JAVASCRIPT',
+                    desc: 'Javascript is for control'
+                }
+            ]
+        }
+    }
+
+    render (){
+        // Change Component according to mode
+        let _article = null;
+        if(this.state.mode === 'read') {
+            _article = <ReadContent
+                title={this.state.content.title}
+                desc={this.state.content.desc}
+            />
+        } else if(this.state.mode === 'create') {
+            _article = <CreateContent
+                title={this.state.content.title}
+                desc={this.state.content.desc}
+                onSubmit={function(title, desc) {
+                    let lToc = this.state.toc;
+
+                    let addedConent = lToc.concat(
+                        {
+                            id: (lToc.length)+1,
+                            title: title,
+                            desc: desc
+                        }
+                    );
+
+                    this.setState({
+                            toc: addedConent
+                        }
+                    );
+                    console.log(this.state.toc);
+                    this.forceUpdate();
+                }.bind(this)
+                }
+            />
+        }
+
+        return
+        (
+            <div>
+                <Subject
+                    title={this.state.subject.title}
+                    sub={this.state.subject.sub}
+                />
+                <TOC
+                    data={this.state.toc}
+                    onChangePage={function(id) {
+                        for (var key of this.state.toc) {
+                            if (key.id === id) {
+                                this.setState({
+                                    mode: 'read',
+                                    content: {
+                                        title: key.title,
+                                        desc: key.desc
+                                    }
+                                });
+                                break;
+                            }
+
+                        }
+                    }.bind(this)}
+                />
+                <Control
+                    onChangeMode={function(mode){
+                        this.setState({
+                           mode: mode
+                        });
+                    }.bind(this)}
+                />
+                { _article }
+            </div>
+        );
+    }
+}
+
+export default App;
+
+```
+- 여기서 `this.setState`의 또다른 특징을 알 수 있다.
+   ```javascript
+   this.setState({
+           toc: addedConent
+       }
+   );
+   ```
+   - `setState`로 toc에 새로운 값을 넣어줬음에도 불구하고, `console.log(this.state.toc);`은
+   변화되기 전의 toc 값을 나타내고 있다. 이는 state가 불변성을 유지하기 때문이다.
+   - 따라서 toc값을 변화시킬때, push와 같은 본 객체의 불변성을 훼손시키는 값으로 객체를 변화시키는 것보다
+   새로운 독립된 객체를 만들어서 `setState`로 값을 전달하는 것을 추천한다.

@@ -11,7 +11,6 @@ class TOC extends Component {
             list.push(
                 <li key={obj.id}
                     onClick={function(e) { // Event Listener
-                        debugger;
                         e.preventDefault();
                         this.props.onChangePage(obj.id);
                     }.bind(this)}>

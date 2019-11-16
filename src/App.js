@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import Subject from './components/Subject'
-import Content from './components/Content'
+import ReadContent from './components/ReadContent'
+import CreateContent from './components/CreateContent'
 import TOC from './components/TOC'
 import Control from './components/Control'
 import './App.css';
@@ -39,8 +40,41 @@ class App extends Component {
     }
 
     render (){
-        console.log('App');
-        return (
+        // Change Component according to mode
+        let _article = null;
+        if(this.state.mode === 'read') {
+            _article = <ReadContent
+                title={this.state.content.title}
+                desc={this.state.content.desc}
+            />
+        } else if(this.state.mode === 'create') {
+            _article = <CreateContent
+                title={this.state.content.title}
+                desc={this.state.content.desc}
+                onSubmit={function(title, desc) {
+                    let lToc = this.state.toc;
+
+                    let addedConent = lToc.concat(
+                        {
+                            id: (lToc.length)+1,
+                            title: title,
+                            desc: desc
+                        }
+                    );
+
+                    this.setState({
+                            toc: addedConent
+                        }
+                    );
+                    console.log(this.state.toc);
+                    this.forceUpdate();
+                }.bind(this)
+                }
+            />
+        }
+
+        return
+        (
             <div>
                 <Subject
                     title={this.state.subject.title}
@@ -49,11 +83,10 @@ class App extends Component {
                 <TOC
                     data={this.state.toc}
                     onChangePage={function(id) {
-                        debugger;
                         for (var key of this.state.toc) {
-                            debugger;
                             if (key.id === id) {
                                 this.setState({
+                                    mode: 'read',
                                     content: {
                                         title: key.title,
                                         desc: key.desc
@@ -72,10 +105,7 @@ class App extends Component {
                         });
                     }.bind(this)}
                 />
-                <Content
-                    title={this.state.content.title}
-                    desc={this.state.content.desc}
-                />
+                { _article }
             </div>
         );
     }
