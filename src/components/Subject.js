@@ -3,6 +3,7 @@ import React from "react";
 
 class Subject extends Component {
     render (){
+        console.log('Subject');
         return (
             <header>
                 <h1 href="/">{this.props.title}</h1>

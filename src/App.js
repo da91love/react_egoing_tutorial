@@ -73,8 +73,7 @@ class App extends Component {
             />
         }
 
-        return
-        (
+        return(
             <div>
                 <Subject
                     title={this.state.subject.title}
@@ -94,14 +93,13 @@ class App extends Component {
                                 });
                                 break;
                             }
-
                         }
                     }.bind(this)}
                 />
                 <Control
                     onChangeMode={function(mode){
                         this.setState({
-                           mode: mode
+                            mode: mode
                         });
                     }.bind(this)}
                 />

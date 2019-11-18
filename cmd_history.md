@@ -1149,3 +1149,82 @@ export default App;
    변화되기 전의 toc 값을 나타내고 있다. 이는 state가 불변성을 유지하기 때문이다.
    - 따라서 toc값을 변화시킬때, push와 같은 본 객체의 불변성을 훼손시키는 값으로 객체를 변화시키는 것보다
    새로운 독립된 객체를 만들어서 `setState`로 값을 전달하는 것을 추천한다.
+
+
+### shouldComponentUpdate 함수
+- `shouldComponentUpdate`함수의 특징
+   1. `render` 이전에 `shouldComponentUpdate`함수가 실행된다.
+   2. `shouldComponentUpdate`함수의 return값이 true이면 render가 호출되고,
+false이면 render는 호출되지 않는다.
+   3. `shouldComponentUpdate`의 인수를 통해, 
+새롭게 업데이트된 props의 값과 초기props의 값에 접근할 수 있다.
+
+`TOC.js`
+```javascript
+import {Component} from "react";
+import React from "react";
+
+class TOC extends Component {
+    shouldComponentUpdate(newProps, newState) {
+        console.log('shouldComponentUpdate');
+        if(newProps.data == this.props.data) {
+            return false;
+        }else {
+            return true;
+        }
+    }
+
+    render() {
+        console.log('TOC');
+        const data = this.props.data;
+
+        const list = [];
+        data.forEach((obj) => {
+            list.push(
+                <li key={obj.id}
+                    onClick={function(e) { // Event Listener
+                        e.preventDefault();
+                        this.props.onChangePage(obj.id);
+                    }.bind(this)}>
+                    <a href={`/content/${obj.id}`}>{obj.title}</a>
+                </li>
+            )
+        });
+
+        return (
+            <nav>
+                <ul>
+                    {list}
+                </ul>
+            </nav>
+        );
+    }
+}
+// export {TOC};
+export default TOC;
+```
+- 앞에서 본바에 의하면 setState로 인해 state값에 변화가 인지될시
+모든 render값이 재호출 되게 된다. 하지만 이것은 값이 변화하지 않은 Component에 대해서도
+ render을 호출하기 때문에 매우 비효율적이다.
+   - `shouldComponentUpdate`의 3번의 특징을 이용해 값이 변화하지 않은 Component값에
+   대해서는 render가 시행되지 않도록 하게 컨트롤할 수 있다.
+- `state`값의 원본을 초기값을 유지하지 않으면 위와같은 컨트롤이 불가능하므로
+`state`값은 초기값을 불변값으로써 유지하는 것이 중요하다.
+
+### immutable 불변성
+- 불변성을 유지할 수 있도록 값을 복사해주는 함수들
+   - 배열 : `Array.from(a)`
+   ```javascript
+   const a = [1,2,3,4];
+   const b = Array.from(a);
+   console.log(b, a===b)
+   // Array from은 배열값을 복사하지만 단순히 a를 참조하는 참조값이 아닌 deepCopy이다.
+   ```
+   
+   - 객체 : `Object.assign({}, a)`
+   ```javascript
+   const a = {a:1, b:2};
+   const b = Object.assign({}, a)
+   console.log(b, a===b)
+   //  Object.assign는 객체값을 복사하지만 단순히 a를 참조하는 참조값이 아닌 deepCopy이다.
+   ```
