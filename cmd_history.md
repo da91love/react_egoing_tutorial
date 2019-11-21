@@ -1228,3 +1228,199 @@ export default TOC;
    console.log(b, a===b)
    //  Object.assign는 객체값을 복사하지만 단순히 a를 참조하는 참조값이 아닌 deepCopy이다.
    ```
+   
+### update기능 추가하기
+
+`app.js`
+```javascript
+import React, {Component} from 'react';
+import Subject from './components/Subject'
+import ReadContent from './components/ReadContent'
+import CreateContent from './components/CreateContent'
+import UpdateContent from './components/UpdateContent'
+import TOC from './components/TOC'
+import Control from './components/Control'
+import './App.css';
+
+class App extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            mode: 'read',
+            subject: {
+                title: 'WEB',
+                sub: 'world wide web'
+            },
+            content: {
+                id: 0,
+                title: 'welcome',
+                desc: 'Hello, React'
+            },
+            toc: [
+                {
+                    id: 1,
+                    title: 'HTML',
+                    desc: 'HTML is Hyper Text Markup Language'
+                },
+                {
+                    id: 2,
+                    title: 'CSS',
+                    desc: 'CSS is for design'
+                },
+                {
+                    id: 3,
+                    title: 'JAVASCRIPT',
+                    desc: 'Javascript is for control'
+                }
+            ]
+        }
+    }
+
+    getContent() {
+        // Change Component according to mode
+        let _article = null;
+        if(this.state.mode === 'read') {
+            _article = <ReadContent
+                title={this.state.content.title}
+                desc={this.state.content.desc}
+            />
+        }else if(this.state.mode === 'create') {
+            _article = <CreateContent
+                onSubmit={function(title, desc) {
+                    let lToc = this.state.toc;
+
+                    let addedConent = lToc.concat(
+                        {
+                            id: (lToc.length)+1,
+                            title: title,
+                            desc: desc
+                        }
+                    );
+
+                    this.setState({
+                            toc: addedConent
+                        }
+                    );
+                    console.log(this.state.toc);
+                }.bind(this)
+                }
+            />
+        }else if(this.state.mode === 'update') {
+            _article = <UpdateContent
+                title={this.state.content.title}
+                desc={this.state.content.desc}
+                id={this.state.content.id}
+
+                onSubmit={function(id, title, desc) {
+                    const toc = Array.from(this.state.toc);
+                    console.log(typeof(toc));
+                    toc.forEach(function(obj) {
+                        if (obj.id === id) {
+                            obj.title = title;
+                            obj.desc = desc;
+                            return;
+                        }
+                    });
+
+                    const content = Array.from(this.state.content);
+                    content.id = id;
+                    content.title = title;
+                    content.desc = desc;
+
+                    this.setState({
+                        mode: 'read',
+                        content: content,
+                        toc: toc
+                    });
+                }.bind(this)
+                }
+            />
+
+        }
+
+        return _article;
+    }
+
+    render() {
+        return(
+            <div>
+                <Subject
+                    title={this.state.subject.title}
+                    sub={this.state.subject.sub}
+                />
+                <TOC
+                    data={this.state.toc}
+                    onChangePage={function(id) {
+                        for (var key of this.state.toc) {
+                            if (key.id === id) {
+                                this.setState({
+                                    mode: 'read',
+                                    content: {
+                                        id: id,
+                                        title: key.title,
+                                        desc: key.desc
+                                    }
+                                });
+                                break;
+                            }
+                        }
+                    }.bind(this)}
+                />
+                <Control
+                    onChangeMode={function(mode){
+                        this.setState({
+                            mode: mode
+                        });
+                    }.bind(this)}
+                />
+                { this.getContent() }
+            </div>
+        );
+    }
+}
+
+export default App;
+
+```
+- update후에는 바뀐 내용을 content에 덮어씌우고 setState로 re-rendering한다.
+
+`UpdateContent.js`
+```javascript
+import {Component} from "react";
+import React from "react";
+
+class UpdateContent extends Component {
+    render() {
+        console.log('CreateContent');
+        return(
+            <article>
+                <h2>Update</h2>
+                <form action="/create" method="post"
+                      onSubmit={function(e) {
+                            e.preventDefault();
+                            debugger;
+                            let id = this.props.id;
+                            let title = e.target.title.value;
+                            let desc = e.target.desc.value;
+                            this.props.onSubmit(id, title, desc);
+                            alert('submit');
+                        }.bind(this)}>
+
+                    <p>
+                        <input type="text" name="title" placeholder="title" defaultValue={this.props.title}/>
+                    </p>
+                    <p>
+                        <textarea name="desc" placeholder="description" defaultValue={this.props.desc}/>
+                    </p>
+                    <p>
+                        <input type="submit"/>
+                    </p>
+
+                </form>
+            </article>
+        )
+    }
+}
+
+export default UpdateContent;
+```

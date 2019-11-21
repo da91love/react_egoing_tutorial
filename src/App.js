@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import Subject from './components/Subject'
 import ReadContent from './components/ReadContent'
 import CreateContent from './components/CreateContent'
+import UpdateContent from './components/UpdateContent'
 import TOC from './components/TOC'
 import Control from './components/Control'
 import './App.css';
@@ -16,6 +17,7 @@ class App extends Component {
                 sub: 'world wide web'
             },
             content: {
+                id: 0,
                 title: 'welcome',
                 desc: 'Hello, React'
             },
@@ -39,7 +41,7 @@ class App extends Component {
         }
     }
 
-    render (){
+    getContent() {
         // Change Component according to mode
         let _article = null;
         if(this.state.mode === 'read') {
@@ -47,32 +49,77 @@ class App extends Component {
                 title={this.state.content.title}
                 desc={this.state.content.desc}
             />
-        } else if(this.state.mode === 'create') {
+        }else if(this.state.mode === 'create') {
             _article = <CreateContent
-                title={this.state.content.title}
-                desc={this.state.content.desc}
                 onSubmit={function(title, desc) {
-                    let lToc = this.state.toc;
+                    let toc = this.state.toc;
 
-                    let addedConent = lToc.concat(
-                        {
-                            id: (lToc.length)+1,
-                            title: title,
-                            desc: desc
-                        }
-                    );
+                    let newContent = {
+                        id: (toc.length)+1,
+                        title: title,
+                        desc: desc
+                    }
+                    let addedContent = toc.concat(newContent);
 
                     this.setState({
-                            toc: addedConent
+                            content: newContent,
+                            toc: addedContent
                         }
                     );
                     console.log(this.state.toc);
-                    this.forceUpdate();
                 }.bind(this)
                 }
             />
+        }else if(this.state.mode === 'update') {
+            _article = <UpdateContent
+                title={this.state.content.title}
+                desc={this.state.content.desc}
+                id={this.state.content.id}
+
+                onSubmit={function(id, title, desc) {
+                    const toc = Array.from(this.state.toc);
+                    console.log(typeof(toc));
+                    toc.forEach(function(obj) {
+                        if (obj.id === id) {
+                            obj.title = title;
+                            obj.desc = desc;
+                            return;
+                        }
+                    });
+
+                    const content = Array.from(this.state.content);
+                    content.id = id;
+                    content.title = title;
+                    content.desc = desc;
+
+                    this.setState({
+                        mode: 'read',
+                        content: content,
+                        toc: toc
+                    });
+                }.bind(this)
+                }
+            />
+        }else if(this.state.mode === 'delete') {
+            const id = this.state.content.id;
+            const toc = Array.from(this.state.toc);
+            toc.forEach(function(obj, i) {
+                if (obj.id === id) {
+                    toc.splice(i, 1);
+                    return;
+                }
+            });
+
+            this.setState({
+                mode: 'read',
+                toc: toc
+            });
         }
 
+        return _article;
+    }
+
+    render() {
         return(
             <div>
                 <Subject
@@ -87,6 +134,7 @@ class App extends Component {
                                 this.setState({
                                     mode: 'read',
                                     content: {
+                                        id: id,
                                         title: key.title,
                                         desc: key.desc
                                     }
@@ -103,7 +151,7 @@ class App extends Component {
                         });
                     }.bind(this)}
                 />
-                { _article }
+                { this.getContent() }
             </div>
         );
     }

@@ -16,7 +16,7 @@ class Control extends Component {
             <div>
                 <button href="/create" id="create" onClick={function(e){onClick(e, 'create')}}>create</button>
                 <button href="/update" id="update" onClick={function(e){onClick(e, 'update')}}>update</button>
-                <button id="delete" onClick={function(e){onClick(e, 'delete')}}>delete</button>
+                <button href="/delete" id="delete" onClick={function(e){onClick(e, 'delete')}}>delete</button>
             </div>
         );
     }
