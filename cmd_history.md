@@ -1,18 +1,23 @@
-## 1일차
-- npm install -g create-react-app
+## React 주요 커맨드 알아보기
 
-- cd {application directory}
+```javascript
+$> npm install -g create-react-app
 
-- create-react-app .
+$> cd {application directory}
 
-- npm run start
+$> create-react-app .
 
-- npm run build
+$> npm run start
 
-- npx serve -s build
+$> npm run build
 
+$> npx serve -s build
 
-## 2일차
+```
+
+- 디펜던시 관리, 디플로이, jslint등 모든 것을 알아서 해준다는게 참 편하다.
+- 스크립트는 `package.json`에 기재되어 있다.
+
 ### react라이브러리에서 Component 오브젝트 상속받아 사용해보기 : Component Class
    - component 상속한 후, render함수를 override 한다.
    ``` javascript
@@ -98,7 +103,8 @@
    export default App;
    ``` 
    - 각 태그들이 class에 의해 객체화 된 것을 볼 수 있다.
-### 클래스태그에서 파라미터 넘겨주기 : props
+   
+### 상위 Component에서 하위 Compoment로 값 넘겨주기 : props
 위의 연습코드에서 App 클래스는 Subject클래스를 태그로 받았다.   
   
 이때 <Subject> 태그에 파라미터를 입력하고, Subject클래스에서 받을수는 없을까? 그렇게 할수만 잇다면 파라미터에 의해 내용이 변하는 재사용성이 높은 오브젝트를 만들 수 잇을 텐데말이다.
@@ -166,7 +172,6 @@ class App extends Component {
 1. chrome extention for react : React developer tool(https://reactjs.org/community/debugging-tools.html)
    - react 로 작성된 페이지에 대해, html태그만 으로는 파악하기 어려운 react components들을 보여준다. 대.박
 
-## 3일차   
 ### Compoent파일로 분리하기
 - componets라는 디렉토리를 src직하에 만든후, class 별로 구분한 각 component 객체들을 파일별로 분리한다.
 - 이때 각 클래스의 export 방법은 다음과 같은 두 가지가 있다.
@@ -227,7 +232,6 @@ export default App;
 - jsx문법 내부에 자바스크립트를 사용하기 위해서는 {}중괄호를 사용하면 된다.
    - <Subject title={this.state.subject.title} sub={this.state.subject.sub}/> 
   
-## 4일차   
 ### 동적으로 html component 생성하기
 `App.js`
 ```javascript
@@ -349,7 +353,7 @@ class TOC extends Component {
 export default TOC;
 ```
 
-### event의 onClick
+### event의 onClick 구현하기
 - 먼저 이벤트의 이해를 쉽게하기 위해, 기존 Subject 클래스의 Component지정을 멈추고, tag를 하드 코딩하여 보도록하자.
 `app.js`
 ```javascript
@@ -469,7 +473,7 @@ export default TOC;
 ...
 
 ```   
-## 5일차 
+
 ### event에서 bind함수 이해하기
 - 아래의 Component를 상속받은 App클래스 내에서 this는 무엇을 가르킬까
 
@@ -518,7 +522,6 @@ class App extends Component {
 ```   
 - 따라서 상위 블록에 존재하는 this를 가져와 bind를 해줄 수 있다.  
    
-## 6일차
 ### event에서 setState함수 이해하기
 
 - 동적으로 state값을 변경할 경우 `this.setState`를 사용하여야 한다.
@@ -632,7 +635,7 @@ class Subject extends Component {
 export default Subject;
 ```
 
-### html의 어트리뷰트 값을 받아 서버에서 처리하기
+### html의 어트리뷰트 값을 받아 서버에서 처리하기 : 클라이언트에서 값을 받아 서버로 전달하기
 
 `App.js`
 ```javascript
@@ -752,7 +755,6 @@ class TOC extends Component {
 export default TOC;
 ``` 
 
-## 7일차
 ### 이벤트 setState함수 이해하기
 - 상위 컴퍼넌트 (APP)가 하위 컴퍼턴트(TOC, Subject, Content)를 조작할 때는 props 사용
 - 컴퍼넌트가 자기 자신의 상태를 바꿀 때는 state
