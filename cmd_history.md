@@ -429,7 +429,7 @@ export default TOC;
 
 ```
 - 위의 코드는 두 가지의 문제점을 가지고 있다.
-   - 첫번째 : `this.state.mode = 'welcome';`에서 this는 클래스의 인스턴스가 아닌 아무것도 아닌 것이다.
+   - 첫번째 : `onClick={function(e)`에서 this는 javascript의 문법상 가장 상위의 window를 가르킨다.
       - -> bind()로 해결한다.
    - 두번째 : react는 `state`를 변경하기 위해 `setState`라는 함수를 가지고 있으므로, 그 함수를 사용하여야 한다.
       - 이때 포인트는 생성자에 들어있는 state프로퍼티가 단순한 프로퍼티가 아니라는 점이다. 
@@ -508,7 +508,7 @@ class App extends Component {
    3. 생성자 new로 생성해 그 인스턴스에 바인딩 되는 경우
    
      
-- 이때 onClick 내부에 this는 아무것도 가르키지 않는다.
+- 이때 onClick 내부에 this는 javascript의 문법상 가장 상위의 window를 가르킨다.
 ```javascript
    <h1 href="/" onClick={function(e) {
         alert('hi');
