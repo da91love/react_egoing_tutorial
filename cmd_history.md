@@ -435,7 +435,7 @@ export default TOC;
       - 이때 포인트는 생성자에 들어있는 state프로퍼티가 단순한 프로퍼티가 아니라는 점이다. 
            react내에서 `state`프로퍼티는 특별한 취급을 받는다. `setState`를 하면 단순히 
            생성자의 값을 바꾸는 것이 아니라 `setState`가 호출된 후 `render`들을 다시 호출하여 
-           새로운 `state`로 화면을 구성한다. 예에서는, App -> TOC -> Content 의 `render`함수를 
+           새로운 `state`로 화면을 구성한다. (setState로 상태가 변경된 component와 그 component의 모든 children tree가 모두 re-render된다. When you call setState in a component, React automatically updates the child components inside of it too.)예에서는, App -> TOC -> Content 의 `render`함수를 
            새로 호출하여 변경된 값으로 새로운 화면을 구성한다. 
       
 ```javascript
